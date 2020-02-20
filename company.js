@@ -27,7 +27,7 @@ connection.connect(function(err) {
       type: "list",
       name: "selection",
       message: "Select Action",
-      choices: ["View All Employees", "View Roles", "View Departments", "Add Employee", "Add Role", "Add Department", "Update Employee Manager", "Remove Employee", "Remove Role", "Remove Department"]
+      choices: ["View All Employees", "View Employees By Manager", "View Roles", "View Departments", "Add Employee", "Add Role", "Add Department", "Update Employee Manager", "Remove Employee", "Remove Role", "Remove Department"]
 
     }
   ])
@@ -37,12 +37,43 @@ connection.connect(function(err) {
 
     if (answers.selection === "View All Employees") {
       
-      connection.query("SELECT * FROM employees", function(err, result) {
+          connection.query("SELECT * FROM employees", function(err, result) {
 
-        console.table(result)
-
-      })
+            console.table(result)
+    
+          })
+ 
     } 
+
+    else if (answers.selection === "View Employees By Manager") {
+
+      inquirer
+        .prompt([
+          {
+            type: "input",
+            name: "manager",
+            message: "Manager Name",
+          }
+        ])
+
+        .then(answers => {
+          console.log(answers)
+
+          connection.query("SELECT first_name, last_name FROM employees WHERE manager = ?", 
+          
+          [
+            answers.manager
+          ],
+      
+          function(err, result) {
+
+            console.table(result)
+    
+          })
+
+        })
+      
+    }
 
     else if (answers.selection === "View Roles") {
 
@@ -96,7 +127,7 @@ connection.connect(function(err) {
         ])
 
         .then(answers => {
-          console.log(answers.selection)
+          console.log(answers)
 
           
           connection.query(
@@ -117,10 +148,88 @@ connection.connect(function(err) {
               console.log(result.affectedRows + " item updated\n")
           }) 
         }) 
-
-
     }
+    
+    else if (answers.selection === "Add Role") {
+
+      inquirer
+        .prompt([
+          {
+            type: "input",
+            name: "title",
+            message: "Role Title",
+          },
+          {
+            type: "input",
+            name: "salary",
+            message: "Role Salary",
+          },
+          {
+            type: "input",
+            name: "department",
+            message: "Role Department",
+          }
+        ])
+
+        .then(answers => {
+          console.log(answers)
+
+          
+          connection.query(
+            
+            "INSERT INTO roles (title, salary, department) VALUES (?, ?, ?)", 
+          
+          [
+            answers.title, 
+            answers.salary, 
+            answers.department, 
+          ],
+
+            function(err, result) {
+            
+              if (err) throw err;
+              console.log(result.affectedRows + " item updated\n")
+          }) 
+        }) 
+    }
+
+    else if (answers.selection === "Add Department") {
+
+      inquirer
+        .prompt([
+          {
+            type: "input",
+            name: "name",
+            message: "Department Name",
+          },
+        ])
+
+        .then(answers => {
+          console.log(answers)
+
+          
+          connection.query(
+            
+            "INSERT INTO departments (name) VALUES (?)", 
+          
+          [
+            answers.name, 
+          ],
+
+            function(err, result) {
+            
+              if (err) throw err;
+              console.log(result.affectedRows + " item updated\n")
+          }) 
+        }) 
+    }
+
+
    
+
+
+
+
   })
 
   
