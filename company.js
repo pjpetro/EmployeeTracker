@@ -224,8 +224,44 @@ connection.connect(function(err) {
         }) 
     }
 
+    else if (answers.selection === "Update Employee Manager") {
 
-   
+      inquirer
+        .prompt([
+          {
+            type: "input",
+            name: "id",
+            message: "Employee ID Number",
+          },
+          {
+            type: "input",
+            name: "manager",
+            message: "New Manager",
+          }
+        ])
+
+        .then(answers => {
+          console.log(answers)
+
+          
+          connection.query(
+            
+            "UPDATE employees SET manager = ? WHERE id = ?", 
+          [
+            answers.manager,
+            parseInt(answers.id),
+          ],
+
+            function(err, result) {
+            
+              if (err) throw err;
+              console.log(result.affectedRows + " item updated\n")
+          }) 
+        }) 
+    }
+
+
+
 
 
 
