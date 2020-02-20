@@ -1,6 +1,6 @@
 # EmployeeTracker
 
-This is a CLI to query and update a data base with employee information for a company.
+This is a CLI to query and update a database with employee information for a company.
 
 To run the application, type 'npm start' in your command line and select an option from the list.
 
