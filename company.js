@@ -27,7 +27,7 @@ connection.connect(function(err) {
       type: "list",
       name: "selection",
       message: "Select Action",
-      choices: ["View All Employees", "Add Employee", "Update Employee Manager", "Remove Employee"]
+      choices: ["View All Employees", "View Roles", "View Departments", "Add Employee", "Add Role", "Add Department", "Update Employee Manager", "Remove Employee", "Remove Role", "Remove Department"]
 
     }
   ])
@@ -43,7 +43,27 @@ connection.connect(function(err) {
 
       })
     } 
-    
+
+    else if (answers.selection === "View Roles") {
+
+      connection.query("SELECT * FROM roles", function(err, result) {
+
+        console.table(result)
+
+      })
+
+    }
+
+    else if (answers.selection === "View Departments") {
+
+      connection.query("SELECT * FROM departments", function(err, result) {
+
+        console.table(result)
+
+      })
+
+    }
+
     else if (answers.selection === "Add Employee") {
       
       inquirer
@@ -52,44 +72,50 @@ connection.connect(function(err) {
             type: "input",
             name: "fname",
             message: "Employee First Name",
-
           },
           {
             type: "input",
             name: "lname",
             message: "Employee Last Name",
-
           },
           {
             type: "input",
-            name: "title",
+            name: "role",
             message: "Employee Job Title",
-
           },
           {
             type: "input",
             name: "department",
             message: "Employee Department",
-
           },
           {
             type: "input",
             name: "manager",
             message: "Employee Manager",
-
           }
         ])
 
         .then(answers => {
           console.log(answers.selection)
 
-          // connection.query("ALTER TABLE employees", function(err, result) {
-
+          
+          connection.query(
             
-    
-          // })
-        
-        
+            "INSERT INTO employees (first_name, last_name, role, department, manager) VALUES (?, ?, ?, ?, ?)", 
+          
+          [
+            answers.fname, 
+            answers.lname,
+            answers.role, 
+            answers.department, 
+            answers.manager
+          ],
+
+            function(err, result) {
+            
+              if (err) throw err;
+              console.log(result.affectedRows + " item updated\n")
+          }) 
         }) 
 
 
